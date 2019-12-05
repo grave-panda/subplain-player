@@ -33,6 +33,8 @@ public class Main extends Application {
         mediaPlayer.setAutoPlay(true);
         mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
 
+        Button playButton = new Button("\u23F8");
+
         // setup the subtitle thread
         Label subtitleMeaning = new Label("hi");
         SubtitleParser subtitleParser = null;
@@ -51,6 +53,7 @@ public class Main extends Application {
                             b.setStyle("-fx-background-color: #ff0000; -fx-border-color: #ff0000; -fx-border-width: 5px;");
                             b.setOnAction(ev -> {
                                 mediaPlayer.pause();
+                                playButton.setText("\u25B6");
                                 String url = "https://dictionaryapi.com/api/v3/references/collegiate/json/"+ b.getText().replaceAll("[^a-zA-Z0-9]", "").toLowerCase()+"?key=2445ff20-cd81-46b1-a5e5-555497d3e8f5";
                                 //
                                 try {
@@ -60,9 +63,8 @@ public class Main extends Application {
                                     con.setRequestProperty("User-Agent", "UwU");
                                     int responseCode = con.getResponseCode();
                                     System.out.println("GET Response Code :: " + responseCode);
-                                    if (responseCode == HttpURLConnection.HTTP_OK) { // success
-                                        BufferedReader in = new BufferedReader(new InputStreamReader(
-                                                con.getInputStream()));
+                                    if (responseCode == HttpURLConnection.HTTP_OK) {
+                                        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
                                         String inputLine;
                                         StringBuffer response = new StringBuffer();
 
@@ -74,7 +76,7 @@ public class Main extends Application {
                                         // print result
                                         System.out.println(response.toString());
                                     } else {
-                                        System.out.println("GET request not worked");
+                                        subtitleMeaning.setText("failed to connect to server.");
                                     }
                                 } catch (Exception exc) {
                                     exc.printStackTrace();
@@ -87,34 +89,13 @@ public class Main extends Application {
                     }
                 }));
                 setSubtitles.play();
-                Timeline removeSubtitles = new Timeline(new KeyFrame(Duration.millis(subtitle.getToMillis()), new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent event) {
-                        subtitles.getChildren().clear();
-                    }
-                }));
+                Timeline removeSubtitles = new Timeline(new KeyFrame(Duration.millis(subtitle.getToMillis()), event -> subtitles.getChildren().clear()));
                 removeSubtitles.play();
             }
-//            if (subtitleParser != null && subtitleParser.hasNext()) subtitle = (Subtitle) subtitleParser.next();
-//            final Subtitle subtitle = (Subtitle) subtitleParser.next();
-//
-//            Timer update_subtitles = new Timer(subtitle.getFromMillis(), new ActionListener() {
-//                @Override
-//                public void actionPerformed(ActionEvent e) {
-//
-//                }
-//            });
-//            update_subtitles.setRepeats(false);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        Button playButton = new Button("\u23F8");
-//        Slider seekBar = new Slider(0, media.getDuration().toSeconds(), 0);
-//        seekBar.setBlockIncrement(1);
-//        seekBar.setShowTickMarks(true);
-//        seekBar.setShowTickLabels(true);
 
         // Create the Event Handlers for the Button
         playButton.setOnAction(event -> {
@@ -128,22 +109,10 @@ public class Main extends Application {
         });
 
 
-//        Timer timer = new Timer();
-//        if (subtitle != null) timer.schedule(new TimerTask() {
-//            @Override
-//            public void run() {
-//                timer.s
-//            }
-//        }, subtitle.getFromMillis());
-//        seekBar.setOnMouseReleased(event -> {
-//            mediaPlayer.seek(new Duration(seekBar.getValue()*1000));
-//            System.out.println(seekBar.getValue());
-//        });
         //Control panel
         HBox controls = new HBox(8);
         controls.getChildren().add(playButton);
         controls.getChildren().add(subtitles);
-//        controls.getChildren().add(seekBar);
 
         VBox mainLayout = new VBox(8);
         MediaView mediaView = new MediaView(mediaPlayer);
@@ -156,7 +125,6 @@ public class Main extends Application {
         // Add media display node to the scene graph
         Scene scene = new Scene(mainLayout);
         stage.setScene(scene);
-//        timer.start();
         stage.show();
     }
 
