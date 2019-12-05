@@ -5,7 +5,7 @@ public class SubtitleParser implements Iterator {
     BufferedReader srtFile;
 
     private Subtitle next;
-    boolean hasNext = true;
+    private boolean hasNext = true;
 
     public SubtitleParser(File subtitle_location) throws IOException {
         srtFile = new BufferedReader(new FileReader(subtitle_location));
@@ -23,20 +23,28 @@ public class SubtitleParser implements Iterator {
     }
 
     @Override
-    public Object next() throws IOException{
+    public Subtitle next(){
         Subtitle temp = next;
-        next = readNextSubtitle();
+        try {
+            readNextSubtitle();
+        } catch (IOException e) {
+            hasNext = false;
+        }
         return temp;
     }
 
     private void readNextSubtitle() throws IOException{
-        srtFile.readLine();
+        if (srtFile.readLine() == null) {
+            hasNext = false;
+            return;
+        }
         String times = srtFile.readLine();
         String text = "";
 
         String temp = "";
-        while ((temp = srtFile.readLine()) != null && !temp.equals("\n")) text += temp;
-        if (temp == null) hasNext = false;
+        while ((temp = srtFile.readLine()) != null && !temp.isEmpty()){
+            text += temp;
+        }
 
         next = new Subtitle(text, times);
     }

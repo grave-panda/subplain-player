@@ -1,9 +1,9 @@
 import java.util.StringTokenizer;
 
 public class Subtitle {
-    String text;
-    int from;
-    int to;
+    private String text;
+    private int from;
+    private int to;
 
     public Subtitle(String subtitle, int fromMillis, int toMillis) {
         text = subtitle;
@@ -11,14 +11,25 @@ public class Subtitle {
         this.to = toMillis;
     }
 
-    public Subtitle(String text, String timestamps) {
+    public Subtitle(String subtitle, String timestamps) {
         StringTokenizer times = new StringTokenizer(timestamps);
-        String[] t1 = times.nextToken().split(";");
+        String[] t1 = times.nextToken().split(",");
         times.nextToken();
-        String[] t2 = times.nextToken().split(";");
-        int from;
-        int to;
+        String[] t2 = times.nextToken().split(",");
+        String[] time1 = t1[0].split(":");
+        String[] time2 = t2[0].split(":");
+        int from = Integer.parseInt(t1[1]);
+        int to = Integer.parseInt(t2[1]);
+        from+=Integer.parseInt(time1[2])*1000;
+        from+=Integer.parseInt(time1[1])*1000*60;
+        from+=Integer.parseInt(time1[0])*1000*60*60;
+        to+=Integer.parseInt(time2[2])*1000;
+        to+=Integer.parseInt(time2[1])*1000*60;
+        to+=Integer.parseInt(time2[0])*1000*60*60;
 
+        text = subtitle;
+        this.from = from;
+        this.to = to;
     }
 
     public String getText() {
@@ -43,9 +54,5 @@ public class Subtitle {
 
     public void setToMillis(int to) {
         this.to = to;
-    }
-
-    public static timeStampToMillis(String timestamp) {
-
     }
 }
