@@ -13,20 +13,9 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import jdk.nashorn.internal.parser.JSONParser;
-import jdk.nashorn.internal.runtime.Context;
-import jdk.nashorn.internal.runtime.JSONListAdapter;
-import jdk.nashorn.internal.runtime.ScriptObject;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Map;
 
 public class Main extends Application {
     @Override
@@ -45,7 +34,7 @@ public class Main extends Application {
 
         // setup the subtitle thread
         ArrayList<Timeline> toPauseSubtitles = new ArrayList<>();
-        Label subtitleMeaning = new Label("hi");
+        Label subtitleMeaning = new Label("");
         SubtitleParser subtitleParser = null;
         HBox subtitles = new HBox(0);
         try {
@@ -65,7 +54,6 @@ public class Main extends Application {
                                 toPauseSubtitles.forEach(sub -> sub.pause());
                                 playButton.setText("\u25B6");
                                 String result = Dictionary.find(b.getText().replaceAll("[^a-zA-Z]", "").toLowerCase());
-                                System.out.println(b.getText() + " : " + result);
                                 subtitleMeaning.setText(b.getText() + " : " + result);
                             });
                             subtitles.getChildren().add(b);
@@ -90,7 +78,7 @@ public class Main extends Application {
                 playButton.setText("\u25B6");
             } else {
                 mediaPlayer.play();
-                toPauseSubtitles.forEach(sub -> sub.play());
+                toPauseSubtitles.forEach(sub -> sub.playFrom(mediaPlayer.getCurrentTime()));
                 playButton.setText("\u23F8");
             }
         });

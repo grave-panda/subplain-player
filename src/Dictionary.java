@@ -10,7 +10,6 @@ public class Dictionary {
             String st;
             while ((st = indices.readLine()) != null) {
                 if (query.compareTo(st.split(" ")[0]) >= 0) {
-                    System.out.println(st.split(" ")[0]);
                     words = new BufferedReader(new FileReader("dict/"+Integer.parseInt(st.split(" ")[1])+".dat"));
                     break;
                 }
