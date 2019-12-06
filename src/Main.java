@@ -35,6 +35,7 @@ public class Main extends Application {
         // setup the subtitle thread
         ArrayList<Timeline> toPauseTimelines = new ArrayList<>();
         Label subtitleMeaning = new Label("");
+        subtitleMeaning.setWrapText(true);
         SubtitleParser subtitleParser = null;
         HBox subtitles = new HBox(0);
         try {
@@ -53,7 +54,7 @@ public class Main extends Application {
                                 mediaPlayer.pause();
                                 toPauseTimelines.forEach(sub -> sub.pause());
                                 playButton.setText("\u25B6");
-                                String result = Dictionary.find(b.getText().replaceAll("[^a-zA-Z]", "").toLowerCase());
+                                String result = Dictionary.find(b.getText().replaceAll("[^a-zA-Z']", "").toLowerCase());
                                 subtitleMeaning.setText(b.getText() + " : " + result);
                             });
                             subtitles.getChildren().add(b);
