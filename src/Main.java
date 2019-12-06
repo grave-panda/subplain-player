@@ -33,7 +33,7 @@ public class Main extends Application {
         Button playButton = new Button("\u23F8");
 
         // setup the subtitle thread
-        ArrayList<Timeline> toPauseSubtitles = new ArrayList<>();
+        ArrayList<Timeline> toPauseTimelines = new ArrayList<>();
         Label subtitleMeaning = new Label("");
         SubtitleParser subtitleParser = null;
         HBox subtitles = new HBox(0);
@@ -51,7 +51,7 @@ public class Main extends Application {
                             b.setStyle("-fx-background-color: #ff0000; -fx-border-color: #ff0000; -fx-border-width: 5px;");
                             b.setOnAction(ev -> {
                                 mediaPlayer.pause();
-                                toPauseSubtitles.forEach(sub -> sub.pause());
+                                toPauseTimelines.forEach(sub -> sub.pause());
                                 playButton.setText("\u25B6");
                                 String result = Dictionary.find(b.getText().replaceAll("[^a-zA-Z]", "").toLowerCase());
                                 subtitleMeaning.setText(b.getText() + " : " + result);
@@ -60,9 +60,10 @@ public class Main extends Application {
                         }
                     }
                 }));
-                toPauseSubtitles.add(setSubtitles);
+                toPauseTimelines.add(setSubtitles);
                 setSubtitles.play();
                 Timeline removeSubtitles = new Timeline(new KeyFrame(Duration.millis(subtitle.getToMillis()), event -> subtitles.getChildren().clear()));
+                toPauseTimelines.add(removeSubtitles);
                 removeSubtitles.play();
             }
 
@@ -74,11 +75,11 @@ public class Main extends Application {
         playButton.setOnAction(event -> {
             if (mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING){
                 mediaPlayer.pause();
-                toPauseSubtitles.forEach(sub -> sub.pause());
+                toPauseTimelines.forEach(sub -> sub.pause());
                 playButton.setText("\u25B6");
             } else {
                 mediaPlayer.play();
-                toPauseSubtitles.forEach(sub -> sub.playFrom(mediaPlayer.getCurrentTime()));
+                toPauseTimelines.forEach(sub -> sub.playFrom(mediaPlayer.getCurrentTime()));
                 playButton.setText("\u23F8");
             }
         });
